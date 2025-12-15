@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: step2-backend-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: step2-backend-deployment
+  template:
+    metadata:
+      labels:
+        app: step2-backend-deployment
+    spec:
+      containers:
+        - name: step2-backend-deployment
+          image: shieldxbot/backend_exemple:Docker_version
+          workingDir: /app
+          command: ["node", "dist/index.js"]
+          resources:
+            limits:
+              memory: "256Mi"
+              cpu: "1"
+            requests:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+            - protocol: TCP
+              containerPort: 3000
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: PORT
+              value: "3000"
+      restartPolicy: Always

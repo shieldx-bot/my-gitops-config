@@ -5,9 +5,9 @@ metadata:
   labels:
     app.kubernetes.io/name: myingress
   annotations:
-    kubernetes.io/ingress.class: traefik
+    kubernetes.io/ingress.class: nginx # 🔥 ĐỔI
 spec:
-  ingressClassName: traefik
+  ingressClassName: nginx # 🔥 ĐỔI
   rules:
     - host: shieldx-app.local
       http:

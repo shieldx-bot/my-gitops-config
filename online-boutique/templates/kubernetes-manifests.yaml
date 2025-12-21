@@ -493,6 +493,14 @@ spec:
       app: redis-cart
   template:
     metadata:
+      annotations: 
+      # Bắt đầu Công Đoạn Tiêm
+      # 1. Bật chế độ tiêm
+      vault.hashicorp.com/agent-inject: "true"
+      # 2. Khai báo role (giấy thông hành ta vừa tạo)
+      vault.hashicorp.com/role: "sre-mart-policy"
+      #3.  nó sẽ tạo ra file tại: /vault/secrets/redis-pass
+      vault.hashicorp.com/agent-inject-secret-redis-pass: "secret/sre-mart/redis"
       labels:
         app: redis-cart
     spec:

@@ -497,6 +497,10 @@ spec:
         vault.hashicorp.com/agent-inject: "true"
         vault.hashicorp.com/role: "sre-mart-policy"
         vault.hashicorp.com/agent-inject-secret-redis-pass: "secret/data/sre-mart/redis"
+        vault.hashicorp.com/agent-inject-template-redis-pass: |
+          {{- with secret "secret/data/sre-mart/redis" -}}
+          {{ .Data.data.password }}
+          {{- end }}
       labels:
         app: redis-cart
     spec:
@@ -516,6 +520,9 @@ spec:
           privileged: false
           readOnlyRootFilesystem: true
         image: redis:alpine
+        args:
+          - "--requirepass"
+          - "$(cat /vault/secrets/redis-pass)"
         ports:
         - containerPort: 6379
         readinessProbe:

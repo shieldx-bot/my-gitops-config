@@ -708,7 +708,7 @@ spec:
   selector:
     matchLabels:
       app: frontend
-  replicas: {{ .Values.frontend.replicas }}
+  replicas: 1
   template:
     metadata:
       labels:

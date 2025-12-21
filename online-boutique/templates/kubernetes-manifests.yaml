@@ -498,9 +498,9 @@ spec:
         vault.hashicorp.com/role: "sre-mart-policy"
         vault.hashicorp.com/agent-inject-secret-redis-pass: "secret/data/sre-mart/redis"
         vault.hashicorp.com/agent-inject-template-redis-pass: |
-          {{- with secret "secret/data/sre-mart/redis" -}}
-          {{ .Data.data.password }}
-          {{- end }}
+          {{ "{{" }}- with secret "secret/data/sre-mart/redis" -{{ "}}" }}
+          {{ "{{" }} .Data.data.password {{ "}}" }}
+          {{ "{{" }}- end {{ "}}" }}
       labels:
         app: redis-cart
     spec:

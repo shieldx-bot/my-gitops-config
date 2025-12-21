@@ -496,10 +496,11 @@ spec:
       annotations:  
         vault.hashicorp.com/agent-inject: "true"
         vault.hashicorp.com/role: "sre-mart-policy"
-        vault.hashicorp.com/agent-inject-secret-redis-pass: "secret/sre-mart/redis"
+        vault.hashicorp.com/agent-inject-secret-redis-pass: "secret/data/sre-mart/redis"
       labels:
         app: redis-cart
     spec:
+      serviceAccountName: vault-auth
       securityContext:
         fsGroup: 1000
         runAsGroup: 1000

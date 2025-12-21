@@ -520,9 +520,7 @@ spec:
           privileged: false
           readOnlyRootFilesystem: true
         image: redis:alpine
-        args:
-          - "--requirepass"
-          - "$(cat /vault/secrets/redis-pass)"
+
         ports:
         - containerPort: 6379
         readinessProbe:

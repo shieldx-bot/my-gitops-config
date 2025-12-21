@@ -794,7 +794,7 @@ spec:
           # - name: FRONTEND_MESSAGE
           #   value: "Replace this with a message you want to display on all pages."
           # As part of an optional Google Cloud demo, you can run an optional microservice called the "packaging service".
-          # - name: PACKAGING_SERVICE_URL
+          # - name: PACKAGING_SERVICE_URLs
           #   value: "" # This value would look like "http://123.123.123"
           resources:
             requests:

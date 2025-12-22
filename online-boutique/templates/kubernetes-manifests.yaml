@@ -501,6 +501,7 @@ spec:
           {{ "{{" }}- with secret "secret/data/sre-mart/redis" -{{ "}}" }}
           {{ "{{" }} .Data.data.password {{ "}}" }}
           {{ "{{" }}- end {{ "}}" }}
+        traffic.sidecar.istio.io/excludeOutboundPorts: "8200"
       labels:
         app: redis-cart
     spec:

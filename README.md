@@ -1,1 +1,1 @@
-# my-gitops-config v6
+# my-gitops-config v7

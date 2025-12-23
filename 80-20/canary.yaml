@@ -1,0 +1,97 @@
+# 1. Tạo Deployment Frontend V2 (Copy từ V1 nhưng đổi label version)
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-v2
+  namespace: sre-mart
+  labels:
+    app: frontend
+    version: v2 # <--- Quan trọng: Label phiên bản mới
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+      version: v2
+  template:
+    metadata:
+      labels:
+        app: frontend
+        version: v2
+      annotations:
+        sidecar.istio.io/inject: "true"
+    spec:
+      containers:
+        - name: server
+          image: gcr.io/google-samples/microservices-demo/frontend:v0.10.1
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          env:
+            - name: PORT
+              value: "8080"
+            # Chúng ta thêm biến môi trường giả để demo (hoặc dùng image khác nếu có)
+            - name: PRODUCT_CATALOG_SERVICE_ADDR
+              value: "productcatalogservice:3550"
+            - name: CURRENCY_SERVICE_ADDR
+              value: "currencyservice:7000"
+            - name: CART_SERVICE_ADDR
+              value: "cartservice:7070"
+            - name: RECOMMENDATION_SERVICE_ADDR
+              value: "recommendationservice:8080"
+            - name: SHIPPING_SERVICE_ADDR
+              value: "shippingservice:50051"
+            - name: CHECKOUT_SERVICE_ADDR
+              value: "checkoutservice:5050"
+            - name: AD_SERVICE_ADDR
+              value: "adservice:9555"
+            - name: SHOPPING_ASSISTANT_SERVICE_ADDR
+              value: "shoppingassistantservice:9090"
+
+---
+# 2. DestinationRule: Định nghĩa 2 tập hợp con (Subsets) dựa trên label version
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: frontend-dr
+  namespace: sre-mart
+spec:
+  # FIX: dùng FQDN để tránh match nhầm host/namespace
+  host: frontend.sre-mart.svc.cluster.local
+  subsets:
+    - name: v1
+      labels:
+        version: v1
+    - name: v2
+      labels:
+        version: v2
+---
+# 3. VirtualService: Chia traffic 80% về V1, 20% về V2
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: frontend-vs
+  namespace: sre-mart
+spec:
+  hosts:
+    - "*" # giữ nguyên nếu bạn đang route qua Gateway public
+  gateways:
+    - frontend-gateway
+  http:
+    - route:
+        - destination:
+            # FIX: host phải khớp DestinationRule host
+            host: frontend.sre-mart.svc.cluster.local
+            subset: v1
+          weight: 80
+        - destination:
+            host: frontend.sre-mart.svc.cluster.local
+            subset: v2
+          weight: 20
